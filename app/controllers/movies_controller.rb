@@ -1,6 +1,8 @@
+Tmdb::Api.key(ENV['TMDB_API'])
+
 class MoviesController < ApplicationController
   before_action :force_index_redirect, only: [:index]
-
+  
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
@@ -19,6 +21,9 @@ class MoviesController < ApplicationController
 
   def new
     # default: render 'new' template
+    @movie_title = params[:name]
+    @movie_rating = params[:rating]
+    @movie_date = params[:date]  
   end
 
   def create
@@ -47,8 +52,20 @@ class MoviesController < ApplicationController
 
   def search_tmdb 
     title = params[:movie][:title]
-    flash[:notice] = "Movie '#{title}' was not found in TMDb."
-    redirect_to movies_path
+    movies = Tmdb::Movie.find(title)
+    if movies.empty?
+      flash[:notice] = "Movie '#{title}' was not found in TMDb."
+      redirect_to movies_path
+    else
+      @title = movies[0].title
+      @date = movies[0].release_date
+      movie = Movie.where(title:@title)
+      if !(movie.empty?)
+        redirect_to movie_path(movie[0].id)
+      else
+        redirect_to new_movie_path(name:@title, date:@date)
+      end 
+    end
   end
 
   private
