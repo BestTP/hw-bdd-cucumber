@@ -13,11 +13,12 @@
     <tr>
       <th>Potatoes</th>
       <th>Comments</th>
+      <th>User Name</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-    <% @reviews.each do |review| %>
+    <% @reviews.zip(@moviegoer_info).each do |review, moviegoer| %>
       <tr>
         <td>
           <%= review.potatoes %>
@@ -26,7 +27,13 @@
           <%= review.comments %>
         </td>
         <td>
-          <%= link_to "Edit", edit_movie_review_path(@movie, review.id) %>
+          <%= moviegoer.full_name %>
+        </td>
+        <td>
+          <% if review.moviegoer_id == current_moviegoer.id%>
+            <%= link_to "Edit", edit_movie_review_path(@movie, review.id) %>
+          <% else %>
+          <% end %>
         </td>
       </tr>
     <% end %>

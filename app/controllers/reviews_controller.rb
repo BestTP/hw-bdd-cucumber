@@ -4,7 +4,7 @@ class ReviewsController < ApplicationController
     def has_moviegoer_and_movie
         unless current_moviegoer
             flash[:warning] = 'You must be logged in to create a review.'
-            redirect_to loggin_path
+            redirect_to login_path
         end
         unless (@movie = Movie.find(params[:movie_id]))
             flash[:warning] = 'Review must be for an existing movie.'
@@ -20,6 +20,13 @@ class ReviewsController < ApplicationController
         # end
         # @review = @movie.reviews.build
         @reviews = Review.where(movie_id:params[:movie_id])
+
+        @moviegoer_info = []
+        @reviews.each do |review|
+            moviegoer = Moviegoer.find_by(id: review.moviegoer_id)
+            
+            @moviegoer_info << moviegoer if moviegoer
+  end
     end
     
     def create

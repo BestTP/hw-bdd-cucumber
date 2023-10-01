@@ -8,9 +8,6 @@ Rottenpotatoes::Application.routes.draw do
   resources :movies do
     resources :reviews
   end
-  resources :moviegoers do
-    resources :reviews
-  end
   root :to => redirect('/movies')
   post '/movies/search_tmdb' => 'movies#search_tmdb', :as => 'search_tmdb'
   
